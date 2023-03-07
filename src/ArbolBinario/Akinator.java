@@ -22,7 +22,15 @@ public class Akinator {
         objAkinatorUI.setDialogo("<html>Actualmente no conozco ningun personaje, podrias enseñarme uno?<html>");
         objAkinatorUI.AkinatorCelular();
         respuestaUsuario();
-        raiz = new Nodo(objAkinatorUI.getTexto(), objAkinatorUI.getImagenPersonaje());
+        
+        String personaje = objAkinatorUI.getTexto();
+        ImageIcon imagen = objAkinatorUI.getImagenPersonaje();
+        if(imagen != null){
+            raiz = new Nodo(personaje, imagen);
+        } else{
+            raiz = new Nodo(personaje, objAkinatorUI.NoIMG());
+        }
+        
 
         objAkinatorUI.setDialogo("<html>Gracias, ahora si podemos iniciar a jugar.<html>");
         objAkinatorUI.AkinatorListo();

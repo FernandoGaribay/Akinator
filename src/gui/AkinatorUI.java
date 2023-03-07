@@ -192,8 +192,12 @@ public class AkinatorUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSubirImgMousePressed
 
     public void mostrarPersonajeImg(ImageIcon img) {
-        Image imagen = img.getImage().getScaledInstance(lblResPersonajeImg.getWidth(), lblResPersonajeImg.getHeight(), Image.SCALE_SMOOTH);
-        this.lblResPersonajeImg.setIcon(new ImageIcon(imagen));
+        try {
+            Image imagen = img.getImage().getScaledInstance(lblResPersonajeImg.getWidth(), lblResPersonajeImg.getHeight(), Image.SCALE_SMOOTH);
+            this.lblResPersonajeImg.setIcon(new ImageIcon(imagen));
+        } catch (Exception e) {
+            this.lblResPersonajeImg.setIcon(NoIMG());
+        }
         this.lblResPersonajeImg.setVisible(true);
         this.lblRespuesta.setVisible(true);
 
@@ -250,8 +254,14 @@ public class AkinatorUI extends javax.swing.JFrame {
     public ImageIcon getImagenPersonaje() {
         return imagenPersonaje;
     }
-    
-    
+
+    public ImageIcon NoIMG() {
+        ImageIcon imagenIcono = new ImageIcon(getClass().getResource("/imagenes/hombremorado.png"));
+        Image imagen = imagenIcono.getImage().getScaledInstance(lblResPersonajeImg.getWidth(), lblResPersonajeImg.getHeight(), WIDTH);
+        imagenIcono = new ImageIcon(imagen);
+        return imagenIcono;
+    }
+
     // Cambiar imagen de Akinator ----------------------------------------------
     public void AkinatorNormal() {
         ImageIcon nuevaImagen = new ImageIcon(getClass().getResource("/imagenes/AkinatorNormal.png"));
