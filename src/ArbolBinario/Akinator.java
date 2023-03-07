@@ -1,12 +1,11 @@
 package ArbolBinario;
 
 import gui.AkinatorUI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 
 public class Akinator {
 
-    private AkinatorUI objAkinatorUI;
+    private final AkinatorUI objAkinatorUI;
     private static Nodo raiz;
 
     public Akinator(AkinatorUI objAkinatorUI) {
@@ -17,48 +16,76 @@ public class Akinator {
         }).start();
     }
 
+    public void iniciarJuego() {
+        objAkinatorUI.alternarPanel(true);
+
+        objAkinatorUI.setDialogo("<html>Actualmente no conozco ningun personaje, podrias enseñarme uno?<html>");
+        objAkinatorUI.AkinatorCelular();
+        respuestaUsuario();
+        raiz = new Nodo(objAkinatorUI.getTexto(), objAkinatorUI.getImagenPersonaje());
+
+        objAkinatorUI.setDialogo("<html>Gracias, ahora si podemos iniciar a jugar.<html>");
+        objAkinatorUI.AkinatorListo();
+        objAkinatorUI.alternarPanel(false);
+        pausaTemp(2500);
+        this.jugar();
+    }
+
     public void jugar() {
         do {
             Nodo nodo = raiz;
             while (nodo != null) {
                 if (nodo.getIzquierda() != null) {
+                    objAkinatorUI.AkinatorNormal();
                     objAkinatorUI.setDialogo(String.valueOf(nodo.getValor()));
                     nodo = (respuestaUsuario()) ? nodo.getIzquierda() : nodo.getDerecha();
                 } else {
-                    objAkinatorUI.setDialogo("El personaje que pensaste es " + nodo.getValor() + "?");
+                    objAkinatorUI.AkinatorConfiado();
+                    objAkinatorUI.setRespuesta("<html>Tu personaje es: " + nodo.getValor() + "?<html>");
+                    objAkinatorUI.mostrarPersonajeImg(nodo.getImagenPersonaje());
                     if (respuestaUsuario()) {
-                        objAkinatorUI.setDialogo("Te gane! Gracias por jugar >_<");
-                        pausar(2000);
+                        objAkinatorUI.ocultarPersonajeImg();
+                        objAkinatorUI.AkinatorFeliz();
+                        objAkinatorUI.setDialogo("<html>Volvi a ganar! Gracias por jugar. ( ͡❛ ͜ʖ ͡❛)✌ <html>");
+                        pausaTemp(5000);
                     } else {
+                        objAkinatorUI.ocultarPersonajeImg();
                         nuevoPersonaje(nodo);
                     }
                     nodo = null;
                 }
             }
-
+            objAkinatorUI.AkinatorListo();
         } while (jugarDeNuevo());
         System.exit(0);
     }
 
     public void nuevoPersonaje(Nodo nodo) {
-        String personajeNodo = (String) nodo.getValor();
+        String personajeNodo = nodo.getValor();
+        ImageIcon personajeImg = nodo.getImagenPersonaje();
 
         String[] respuestas = pedirDatos();
-        Nodo nodoIzq = new Nodo(personajeNodo);
-        Nodo nodoDer = new Nodo(respuestas[0]); // Nuevo Personaje
+        Nodo nodoIzq = new Nodo(personajeNodo, personajeImg); // Personaje actual
+        Nodo nodoDer = new Nodo(respuestas[0], objAkinatorUI.getImagenPersonaje()); // Nuevo Personaje
+
         nodo.setValor(respuestas[1]); // Caracteristica del personaje
+        nodo.setImagenPersonaje(null); // Imagen del personaje
 
         nodo.setIzquierda(nodoDer);
         nodo.setDerecha(nodoIzq);
+        raiz = this.equilibrarArbol(raiz);
     }
 
     public String[] pedirDatos() {
         String[] resultado = new String[2];
         objAkinatorUI.alternarPanel(true);
 
-        objAkinatorUI.setDialogo("Cual es el personaje que pensaste?");
+        objAkinatorUI.AkinatorSorprendido();
+        objAkinatorUI.setDialogo("<html>No pude adivinarlo, podrias decirme cual es el personaje que pensaste?<html>");
         respuestaUsuario();
         resultado[0] = objAkinatorUI.getTexto();
+
+        objAkinatorUI.AkinatorCelular();
         objAkinatorUI.setDialogo("<html>Cual seria una caracteristica de " + resultado[0] + "?<html>");
         respuestaUsuario();
         resultado[1] = objAkinatorUI.getTexto() + "?";
@@ -72,23 +99,10 @@ public class Akinator {
 
         if (!respuestaUsuario()) {
             objAkinatorUI.setDialogo("Gracias por jugar!");
-            pausar(2500);
+            pausaTemp(2000);
             return false;
         }
         return true;
-    }
-
-    public void iniciarJuego() {
-        objAkinatorUI.alternarPanel(true);
-
-        objAkinatorUI.setDialogo("<html>Actualmente no conosco ningun personaje, podrias enseñarme uno?<html>");
-        respuestaUsuario();
-        raiz = new Nodo(objAkinatorUI.getTexto());
-
-        objAkinatorUI.setDialogo("<html>Gracias, ahora si podemos iniciar a jugar.<html>");
-        respuestaUsuario();
-        objAkinatorUI.alternarPanel(false);
-        this.jugar();
     }
 
     public boolean respuestaUsuario() {
@@ -101,11 +115,23 @@ public class Akinator {
         return resp;
     }
 
-    public void pausar(int milisegundos) {
+    public void pausaTemp(int milisegundos) {
         try {
             Thread.sleep(milisegundos);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Akinator.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
         }
+    }
+
+    public Nodo equilibrarArbol(Nodo raiz) {
+        return raiz.equilibrarArbolR(raiz);
+    }
+
+    public static Nodo getRaiz() {
+        return raiz;
+    }
+
+    public static void setRaiz(Nodo aRaiz) {
+        raiz = aRaiz;
     }
 }
