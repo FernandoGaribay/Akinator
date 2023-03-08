@@ -8,14 +8,14 @@ public class Nodo {
     private ImageIcon imagenPersonaje;
     private Nodo izquierda;
     private Nodo derecha;
-    private int factorEquilibrio;
-    
+    private int altura;
+
     public Nodo() {
         this.valor = null;
         this.imagenPersonaje = null;
         this.izquierda = null;
         this.derecha = null;
-        this.factorEquilibrio = 0;
+        this.altura = 0;
     }
 
     public Nodo(String valor, ImageIcon imagenPersonaje) {
@@ -23,10 +23,9 @@ public class Nodo {
         this.imagenPersonaje = imagenPersonaje;
         this.izquierda = null;
         this.derecha = null;
-        this.factorEquilibrio = 0;
+        this.altura = 1;
     }
 
-    
     public Nodo equilibrarArbolR(Nodo nodoActual) {
         if (nodoActual == null) {
             return null;
@@ -52,14 +51,6 @@ public class Nodo {
         return nodoActual;
     }
 
-    private int calcularAltura(Nodo nodoActual) {
-        if (nodoActual == null) {
-            return 0;
-        }
-
-        return 1 + Math.max(calcularAltura(nodoActual.getIzquierda()), calcularAltura(nodoActual.getDerecha()));
-    }
-
     private int calcularFactorBalance(Nodo nodoActual) {
         if (nodoActual == null) {
             return 0;
@@ -68,10 +59,18 @@ public class Nodo {
         return calcularAltura(nodoActual.getIzquierda()) - calcularAltura(nodoActual.getDerecha());
     }
 
-    private Nodo rotacionIzquierda(Nodo nodoActual) {
-        Nodo nuevoNodoActual = nodoActual.getDerecha();
-        nodoActual.setDerecha(nuevoNodoActual.getIzquierda());
-        nuevoNodoActual.setIzquierda(nodoActual);
+    private int calcularAltura(Nodo nodoActual) {
+        if (nodoActual == null) {
+            return 0;
+        }
+
+        return 1 + Math.max(calcularAltura(nodoActual.getIzquierda()), calcularAltura(nodoActual.getDerecha()));
+    }
+
+    private Nodo rotacionIzquierda(Nodo nodoActual) { // cuando un nodo tiene un factor de balance de +2
+        Nodo nuevoNodoActual = nodoActual.getDerecha(); // Se obtiene el hijo derecho del nodo actual, que ahora sera el valor del nuevo nodo actual
+        nodoActual.setDerecha(nuevoNodoActual.getIzquierda()); // del nodo actual se establece como nodo derecho el nodo izquierdo del nuevo nodo actual
+        nuevoNodoActual.setIzquierda(nodoActual); // el nuevo nodo actuak se establece como nodo izquierdo el nodo actual
         return nuevoNodoActual;
     }
 
@@ -112,13 +111,5 @@ public class Nodo {
 
     public void setDerecha(Nodo derecha) {
         this.derecha = derecha;
-    }
-
-    public int getFactorEquilibrio() {
-        return factorEquilibrio;
-    }
-
-    public void setFactorEquilibrio(int factorEquilibrio) {
-        this.factorEquilibrio = factorEquilibrio;
     }
 }
