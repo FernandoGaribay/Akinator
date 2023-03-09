@@ -62,7 +62,7 @@ public class AkinatorUI extends javax.swing.JFrame {
         areaTexto.setWrapStyleWord(true);
         scrollPanel.setViewportView(areaTexto);
 
-        pnlPanel.add(scrollPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 340, 200, 120));
+        pnlPanel.add(scrollPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 330, 200, 120));
 
         lblSeleccioneImg.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         lblSeleccioneImg.setForeground(new java.awt.Color(255, 255, 255));
